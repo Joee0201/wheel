@@ -17,6 +17,12 @@
       height: 300px;
       margin: 0 auto;
     }
+    #history-list {
+  list-style-type: decimal;
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
     
 #arrow {
   position: absolute;
@@ -137,21 +143,7 @@ function updateChoiceList() {
   });
 }
 
-    function updateWheel() {
-      const sliceCount = choices.length || 1; // Ensure at least one slice for empty wheel
-      const sliceAngle = 360 / sliceCount;
-      wheel.innerHTML = '';
-      choices.forEach((choice, index) => {
-        const slice = document.createElement('div');
-        const color = `hsl(${(index * 360) / sliceCount}, 70%, 50%)`;
-        slice.className = 'slice';
-        slice.style.backgroundColor = color;
-        slice.style.transform = `rotate(${index * sliceAngle}deg)`;
-        slice.style.setProperty('--angle', `${sliceAngle}deg`);
-        slice.innerHTML = `<span>${choice}</span>`;
-        wheel.appendChild(slice);
-      });
-    }
+let spinCount = 0; // Initialize a counter to track the number of spins
 
 function spinWheel() {
   if (choices.length === 0) return;
@@ -174,9 +166,25 @@ function spinWheel() {
 
   // Announce the result after spinning
   setTimeout(() => {
-    alert(`The wheel landed on: ${choices[randomIndex]}!`);
+    const winner = choices[randomIndex];
+    alert(`The wheel landed on: ${winner}!`);
+    
+    // Increment the spin count and add the winner to the history list
+    spinCount++;
+
+    // Create a new list item for the history and append it
+    const historyItem = document.createElement('li');
+    historyItem.textContent = `${spinCount}. ${winner}`;
+    document.getElementById('history-list').appendChild(historyItem);
   }, 3000);
 }
+
+
+<!-- History Section -->
+<div id="history-container" style="margin-top: 20px;">
+  <strong>History:</strong>
+  <ol id="history-list"></ol>
+</div>
 
 
     addChoiceBtn.addEventListener('click', addChoice);
