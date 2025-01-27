@@ -10,37 +10,38 @@
       text-align: center;
       margin: 20px;
     }
+
     #wheel {
-      margin: 20px auto;
+      position: relative;
       width: 300px;
       height: 300px;
       border-radius: 50%;
       border: 5px solid #000;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform-origin: center;
       overflow: hidden;
+      transform: rotate(0deg);
+      transition: transform 3s cubic-bezier(0.33, 1, 0.68, 1);
     }
-    .choice {
+
+    #wheel .slice {
       position: absolute;
       width: 50%;
       height: 50%;
       background: lightblue;
-      transform-origin: bottom right;
-      text-align: center;
-      padding: 5px;
+      transform-origin: 100% 100%;
+      clip-path: polygon(0 0, 100% 0, 100% 100%);
     }
+
     #spin-btn {
       padding: 10px 20px;
       font-size: 16px;
       margin-top: 20px;
       cursor: pointer;
     }
+
     #input-container {
       margin: 20px;
     }
+
     #choices {
       margin-top: 10px;
       font-size: 14px;
@@ -69,15 +70,26 @@
     let choices = [];
     let angle = 0;
 
-    function updateWheel() {
-      wheel.innerHTML = '';
+    function createWheel() {
+      wheel.innerHTML = ''; // Clear the wheel
       const sliceAngle = 360 / choices.length;
       choices.forEach((choice, index) => {
         const slice = document.createElement('div');
-        slice.className = 'choice';
-        slice.style.transform = `rotate(${index * sliceAngle}deg) skewY(-60deg)`;
-        slice.style.background = index % 2 === 0 ? 'lightblue' : 'lightgreen';
-        slice.innerText = choice;
+        slice.className = 'slice';
+        slice.style.transform = `rotate(${index * sliceAngle}deg)`;
+        slice.style.backgroundColor = index % 2 === 0 ? 'lightblue' : 'lightgreen';
+
+        // Add text
+        const text = document.createElement('div');
+        text.style.position = 'absolute';
+        text.style.transform = `rotate(${sliceAngle / 2}deg) translateX(100%)`;
+        text.style.transformOrigin = '0 50%';
+        text.style.width = '100%';
+        text.style.textAlign = 'center';
+        text.style.fontSize = '12px';
+        text.textContent = choice;
+
+        slice.appendChild(text);
         wheel.appendChild(slice);
       });
     }
@@ -87,7 +99,7 @@
       if (choice) {
         choices.push(choice);
         choicesDiv.innerText = `Choices: ${choices.join(', ')}`;
-        updateWheel();
+        createWheel();
         choiceInput.value = '';
       }
     });
@@ -95,11 +107,12 @@
     spinBtn.addEventListener('click', () => {
       if (choices.length === 0) return;
       spinSound.play();
-      angle += Math.random() * 360 + 360; // Spin multiple times
-      wheel.style.transition = 'transform 3s cubic-bezier(0.33, 1, 0.68, 1)';
+      const randomSpin = Math.random() * 360 + 360 * 3; // Spin multiple times
+      angle += randomSpin;
       wheel.style.transform = `rotate(${angle}deg)`;
+
       setTimeout(() => {
-        const selectedIndex = Math.floor((360 - (angle % 360)) / (360 / choices.length));
+        const selectedIndex = Math.floor(((360 - (angle % 360)) / (360 / choices.length)) % choices.length);
         alert(`Selected: ${choices[selectedIndex]}`);
       }, 3000);
     });
