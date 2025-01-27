@@ -126,14 +126,16 @@
       choiceInput.value = '';
     }
 
-    function updateChoiceList() {
-      choiceList.innerHTML = '';
-      choices.forEach(choice => {
-        const li = document.createElement('li');
-        li.textContent = choice;
-        choiceList.appendChild(li);
-      });
-    }
+function updateChoiceList() {
+  choiceList.innerHTML = '';
+  choices.forEach((choice, index) => {
+    const li = document.createElement('li');
+    const color = `hsl(${(index * 360) / choices.length}, 70%, 50%)`; // Calculate color based on index
+    li.textContent = choice;
+    li.style.color = color; // Apply the color to the bullet point
+    choiceList.appendChild(li);
+  });
+}
 
     function updateWheel() {
       const sliceCount = choices.length || 1; // Ensure at least one slice for empty wheel
