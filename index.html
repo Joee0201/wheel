@@ -151,22 +151,31 @@
       });
     }
 
-    function spinWheel() {
-      if (choices.length === 0) return;
+function spinWheel() {
+  if (choices.length === 0) return;
 
-      spinSound.play();
-      const randomIndex = Math.floor(Math.random() * choices.length);
-      const sliceAngle = 360 / choices.length;
-      const randomAngle = randomIndex * sliceAngle + sliceAngle / 2;
-      const spins = 5 * 360;
-      angle = spins + randomAngle;
+  spinSound.play();
+  
+  // Randomize the spin angle
+  const randomIndex = Math.floor(Math.random() * choices.length);
+  const sliceAngle = 360 / choices.length;
+  const randomAngle = randomIndex * sliceAngle + sliceAngle / 2;
 
-      wheel.style.transform = `rotate(${angle}deg)`;
+  // Add multiple full spins for dramatic effect
+  const spins = 5 * 360;
 
-      setTimeout(() => {
-        alert(`The wheel landed on: ${choices[randomIndex]}!`);
-      }, 3000);
-    }
+  // Update the angle to a new random total
+  angle = spins + randomAngle;
+
+  // Apply the spin to the wheel
+  wheel.style.transform = `rotate(${angle}deg)`;
+
+  // Announce the result after spinning
+  setTimeout(() => {
+    alert(`The wheel landed on: ${choices[randomIndex]}!`);
+  }, 3000);
+}
+
 
     addChoiceBtn.addEventListener('click', addChoice);
     spinBtn.addEventListener('click', spinWheel);
