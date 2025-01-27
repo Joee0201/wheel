@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Choice Spinner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    #wheel {
+      margin: 20px auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 5px solid #000;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-origin: center;
+      overflow: hidden;
+    }
+    .choice {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background: lightblue;
+      transform-origin: bottom right;
+      text-align: center;
+      padding: 5px;
+    }
+    #spin-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    #input-container {
+      margin: 20px;
+    }
+    #choices {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Choice Spinner</h1>
+  <div id="input-container">
+    <input type="text" id="choice-input" placeholder="Enter a choice">
+    <button id="add-choice">Add Choice</button>
+  </div>
+  <div id="choices"></div>
+  <div id="wheel"></div>
+  <button id="spin-btn">Spin</button>
+  <audio id="spin-sound">
+    <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
+  </audio>
+  <script>
+    const wheel = document.getElementById('wheel');
+    const addChoiceBtn = document.getElementById('add-choice');
+    const spinBtn = document.getElementById('spin-btn');
+    const choiceInput = document.getElementById('choice-input');
+    const choicesDiv = document.getElementById('choices');
+    const spinSound = document.getElementById('spin-sound');
+    let choices = [];
+    let angle = 0;
+
+    function updateWheel() {
+      wheel.innerHTML = '';
+      const sliceAngle = 360 / choices.length;
+      choices.forEach((choice, index) => {
+        const slice = document.createElement('div');
+        slice.className = 'choice';
+        slice.style.transform = `rotate(${index * sliceAngle}deg) skewY(-60deg)`;
+        slice.style.background = index % 2 === 0 ? 'lightblue' : 'lightgreen';
+        slice.innerText = choice;
+        wheel.appendChild(slice);
+      });
+    }
+
+    addChoiceBtn.addEventListener('click', () => {
+      const choice = choiceInput.value.trim();
+      if (choice) {
+        choices.push(choice);
+        choicesDiv.innerText = `Choices: ${choices.join(', ')}`;
+        updateWheel();
+        choiceInput.value = '';
+      }
+    });
+
+    spinBtn.addEventListener('click', () => {
+      if (choices.length === 0) return;
+      spinSound.play();
+      angle += Math.random() * 360 + 360; // Spin multiple times
+      wheel.style.transition = 'transform 3s cubic-bezier(0.33, 1, 0.68, 1)';
+      wheel.style.transform = `rotate(${angle}deg)`;
+      setTimeout(() => {
+        const selectedIndex = Math.floor((360 - (angle % 360)) / (360 / choices.length));
+        alert(`Selected: ${choices[selectedIndex]}`);
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
