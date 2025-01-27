@@ -109,6 +109,11 @@
     <div id="wheel"></div>
   </div>
   <button id="spin-btn">Spin</button>
+  <!-- History Section -->
+<div id="history-container" style="margin-top: 20px;">
+  <strong>History:</strong>
+  <ol id="history-list"></ol>
+</div>
   <audio id="spin-sound">
     <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
   </audio>
@@ -179,12 +184,6 @@ function spinWheel() {
   }, 3000);
 }
 
-
-<!-- History Section -->
-<div id="history-container" style="margin-top: 20px;">
-  <strong>History:</strong>
-  <ol id="history-list"></ol>
-</div>
 
 
     addChoiceBtn.addEventListener('click', addChoice);
