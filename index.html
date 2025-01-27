@@ -51,17 +51,16 @@
 
     #wheel .slice span {
       position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 25%;
-      left: 25%;
+      width: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      transform-origin: 50% 50%;
+      transform: rotate(calc(-1 * var(--angle) / 2));
       font-size: 12px;
       font-weight: bold;
       color: white;
-      transform: rotate(0deg);
     }
 
     #spin-btn {
@@ -137,7 +136,7 @@
     }
 
     function updateWheel() {
-      const sliceCount = choices.length;
+      const sliceCount = choices.length || 1; // Ensure at least one slice for empty wheel
       const sliceAngle = 360 / sliceCount;
       wheel.innerHTML = '';
       choices.forEach((choice, index) => {
@@ -146,7 +145,8 @@
         slice.className = 'slice';
         slice.style.backgroundColor = color;
         slice.style.transform = `rotate(${index * sliceAngle}deg)`;
-        slice.innerHTML = `<span style="transform: rotate(-${index * sliceAngle}deg)">${choice}</span>`;
+        slice.style.setProperty('--angle', `${sliceAngle}deg`);
+        slice.innerHTML = `<span>${choice}</span>`;
         wheel.appendChild(slice);
       });
     }
