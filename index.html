@@ -18,24 +18,23 @@
       margin: 0 auto;
     }
     #history-list {
-  list-style-type: decimal;
-  padding-left: 20px;
-  margin-top: 10px;
-}
-
+      list-style-type: decimal;
+      padding-left: 20px;
+      margin-top: 10px;
+    }
     
-#arrow {
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 30px solid black; /* changed from border-bottom */
-  z-index: 2;
-}
+    #arrow {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 30px solid black;
+      z-index: 2;
+    }
 
     #wheel {
       position: relative;
@@ -109,14 +108,15 @@
     <div id="wheel"></div>
   </div>
   <button id="spin-btn">Spin</button>
-  <!-- History Section -->
-<div id="history-container" style="margin-top: 20px;">
-  <strong>History:</strong>
-  <ol id="history-list"></ol>
-</div>
+
+  <div id="history-container" style="margin-top: 20px;">
+    <strong>History:</strong>
+    <ol id="history-list"></ol>
+  </div>
   <audio id="spin-sound">
     <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
   </audio>
+
   <script>
     const wheel = document.getElementById('wheel');
     const addChoiceBtn = document.getElementById('add-choice');
@@ -134,62 +134,84 @@
       choices.push(choice);
       updateChoiceList();
       updateWheel();
-      choiceInput.value = '';
+      choiceInput.value = ''; // Clear the input field after adding a choice
     }
 
-function updateChoiceList() {
-  choiceList.innerHTML = '';
-  choices.forEach((choice, index) => {
-    const li = document.createElement('li');
-    const color = `hsl(${(index * 360) / choices.length}, 70%, 50%)`; // Calculate color based on index
-    li.textContent = choice;
-    li.style.color = color; // Apply the color to the bullet point
-    choiceList.appendChild(li);
-  });
-}
+    function updateChoiceList() {
+      choiceList.innerHTML = '';
+      choices.forEach((choice, index) => {
+        const li = document.createElement('li');
+        const color = `hsl(${(index * 360) / choices.length}, 70%, 50%)`; // Calculate color based on index
+        li.textContent = choice;
+        li.style.color = color; // Apply the color to the bullet point
+        choiceList.appendChild(li);
+      });
+    }
 
-let spinCount = 0; // Initialize a counter to track the number of spins
+    function updateWheel() {
+      // Clear previous slices
+      wheel.innerHTML = '';
 
-function spinWheel() {
-  if (choices.length === 0) return;
+      const sliceAngle = 360 / choices.length;
 
-  spinSound.play();
-  
-  // Randomize the spin angle
-  const randomIndex = Math.floor(Math.random() * choices.length);
-  const sliceAngle = 360 / choices.length;
-  const randomAngle = randomIndex * sliceAngle + sliceAngle / 2;
+      // Create slices for each choice
+      choices.forEach((choice, index) => {
+        const slice = document.createElement('div');
+        slice.classList.add('slice');
+        slice.style.transform = `rotate(${sliceAngle * index}deg)`;
 
-  // Add multiple full spins for dramatic effect
-  const spins = 5 * 360;
+        const span = document.createElement('span');
+        span.style.setProperty('--angle', sliceAngle); // Apply angle for text rotation
+        span.textContent = choice;
 
-  // Update the angle to a new random total
-  angle = spins + randomAngle;
+        slice.appendChild(span);
+        wheel.appendChild(slice);
+      });
+    }
 
-  // Apply the spin to the wheel
-  wheel.style.transform = `rotate(${angle}deg)`;
+    let spinCount = 0; // Initialize a counter to track the number of spins
 
-  // Announce the result after spinning
-  setTimeout(() => {
-    const winner = choices[randomIndex];
-    alert(`The wheel landed on: ${winner}!`);
-    
-    // Increment the spin count and add the winner to the history list
-    spinCount++;
+    function spinWheel() {
+      if (choices.length === 0) return;
 
-    // Create a new list item for the history and append it
-    const historyItem = document.createElement('li');
-    historyItem.textContent = `${spinCount}. ${winner}`;
-    document.getElementById('history-list').appendChild(historyItem);
-  }, 3000);
-}
+      spinSound.play();
+      
+      // Randomize the spin angle
+      const randomIndex = Math.floor(Math.random() * choices.length);
+      const sliceAngle = 360 / choices.length;
+      const randomAngle = randomIndex * sliceAngle + sliceAngle / 2;
 
+      // Add multiple full spins for dramatic effect
+      const spins = 5 * 360;
 
+      // Update the angle to a new random total
+      angle = spins + randomAngle;
+
+      // Apply the spin to the wheel
+      wheel.style.transform = `rotate(${angle}deg)`;
+
+      // Announce the result after spinning
+      setTimeout(() => {
+        const winner = choices[randomIndex];
+        alert(`The wheel landed on: ${winner}!`);
+        
+        // Increment the spin count and add the winner to the history list
+        spinCount++;
+
+        // Create a new list item for the history and append it
+        const historyItem = document.createElement('li');
+        historyItem.textContent = `${spinCount}. ${winner}`;
+        document.getElementById('history-list').appendChild(historyItem);
+      }, 3000);
+    }
 
     addChoiceBtn.addEventListener('click', addChoice);
     spinBtn.addEventListener('click', spinWheel);
     choiceInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addChoice();
+      if (e.key === 'Enter') {
+        addChoice();
+        choiceInput.value = ''; // Clear the input field after adding a choice
+      }
     });
   </script>
 </body>
